@@ -197,7 +197,7 @@
 '                <span data-l10n-id="print_label">Print</span>\n' +
 '              </button>\n' +
 '\n' +
-'              <a id="download" class="toolbarButton download hiddenMediumView" download title="Download" tabindex="34" data-l10n-id="download">\n' +
+'              <a id="download" class="toolbarButton download hiddenMediumView" title="Download" tabindex="34" data-l10n-id="download">\n' +
 '                <span data-l10n-id="download_label">Download</span>\n' +
 '              </a>\n' +
 '\n' +
@@ -431,7 +431,6 @@
 				onInit: '&',
 				onPageLoad: '&',
 				scale: '=',
-				fileName:'='
 			},
 			link: function ($scope, $element, $attrs) {
 				$element.children().wrap('<div class="pdfjs" style="width: 100%; height: 100%;"></div>');
@@ -525,19 +524,16 @@
 						var downloadButton = document.getElementById('download');
 						// downloadButton.onclick = function(){
 							var pdfLink = $attrs.src;
-							console.log('pdfLink', pdfLink);
-							// var fileName = 'file.pdf';
+							var fileName = 'file.pdf';
 							$http.get(pdfLink , {responseType: 'arraybuffer'}).then(function(response){
 								if(response.status ==200){
 									// var a = document.createElement("a");
 									var a = document.getElementById('download');
 									// document.body.appendChild(a);
-									var temp = response.config.url.split('/');
-									var fileName = temp[temp.length - 1];
 									var file = new Blob([response.data], {type: 'application/pdf'});
 									var fileURL = window.URL.createObjectURL(file);
 									a.href = fileURL;
-									a.download = $scope.fileName;
+									a.download = fileName;
 									a.target = '_blank';
 									// a.click();
 								}
