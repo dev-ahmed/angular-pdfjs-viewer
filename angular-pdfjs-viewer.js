@@ -7,7 +7,7 @@
 +function () {
 	'use strict';
 
-	var module = angular.module('pdfjsViewer', []);
+	var module = angular.module('pdfjsViewer', ['ngCordova']);
 
 	module.provider('pdfjsViewerConfig', function() {
 		var config = {
@@ -57,7 +57,7 @@
 		}
 	}]);
 
-	module.directive('pdfjsViewer', ['$http','$interval', function ($http, $interval) {
+	module.directive('pdfjsViewer', ['$http','$interval','$cordovaSocialSharing', function ($http, $interval,$cordovaSocialSharing) {
 		return {
 			template: '<pdfjs-wrapper>\n' +
 '  <div id="outerContainer">\n' +
@@ -522,11 +522,9 @@
 						document.getElementById('outerContainer').style.height = $attrs.height;
 					}
 					if($attrs.download){
-						var downloadButton = document.getElementById('download');
-						// downloadButton.onclick = function(){
+							var downloadButton = document.getElementById('download');
 							var pdfLink = $attrs.src;
 							console.log('pdfLink', pdfLink);
-							// var fileName = 'file.pdf';
 							$http.get(pdfLink , {responseType: 'arraybuffer'}).then(function(response){
 								if(response.status ==200){
 									// var a = document.createElement("a");
@@ -539,7 +537,15 @@
 									a.href = fileURL;
 									a.download = $scope.fileName;
 									a.target = '_blank';
-									// a.click();
+									downloadButton.onclick = function(){
+										$cordovaSocialSharing
+									    .share($scope.fileName, 'Share this document?', file , pdfLink)
+									    .then(function(result) {
+									      console.log('Success!', result);
+									    }, function(err) {
+									      console.log('error' , err);
+									    });
+									}
 								}
 							});
 						// }
